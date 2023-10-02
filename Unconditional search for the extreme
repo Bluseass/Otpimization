@@ -1,0 +1,59 @@
+import pandas as pd
+df = pd.DataFrame(columns = ['y','weightA','Fa','Fb','x/','x//','Lx','ratio','iterpoint'])
+import numpy as np
+import matplotlib.pyplot as plt
+
+def f(x):
+    return x**3 - np.sin(x)
+
+def golden_section_search(f, a, b, epsilon):
+    golden_ratio = (np.sqrt(5) - 1) / 2  # Золотое сечение
+    x1 = b - golden_ratio * (b - a)
+    x2 = a + golden_ratio * (b - a)
+    f1 = f(x1)
+    f2 = f(x2)
+
+    while abs(b - a) > epsilon:
+        print('точка итерации y - ',round(a,2),', точка итерации x - ',round(b,2),', f(a) - ',round(f1,2),', f(b) - ',round(f2,2),', x/ - ',round(x1,2),', x// - ',round(x2,2),
+              ', (L-x) - ', round(1-golden_ratio,2),'золотое сечение (x) - ',round(golden_ratio,2),'текущая точка итерации',)
+
+        if f1 < f2:
+            b = x2
+            x2 = x1
+            f2 = f1
+            x1 = b - golden_ratio * (b - a)
+            f1 = f(x1)
+        else:
+            a = x1
+            x1 = x2
+            f1 = f2
+            x2 = a + golden_ratio * (b - a)
+            f2 = f(x2)
+
+
+    return (a + b) / 2
+i=0
+# Задаем границы отрезка и точность
+a = 0.5
+b = 1.0
+epsilon = 0.05
+
+# Находим экстремум функции
+extremum = golden_section_search(f, a, b, epsilon)
+extremum_value = f(extremum)
+
+print("Экстремум функции:", extremum)
+print("Значение функции в экстремуме:", extremum_value)
+
+# График функции
+x = np.linspace(0.5, 1, 100)
+y = f(x)
+
+plt.plot(x, y)
+plt.axvline(x=extremum, color='r', linestyle='--', label='Экстремум')
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title('График функции f(x)=x^3 - sin(x)')
+plt.legend()
+plt.grid(True)
+plt.show()
